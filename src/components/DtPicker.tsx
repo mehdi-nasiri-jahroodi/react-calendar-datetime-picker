@@ -1,4 +1,4 @@
-import React, { useMemo, ReactNode, useCallback } from 'react'
+import React, { useMemo, ReactNode, useCallback, useEffect } from 'react'
 import type { Day, Range, Multi, RangeDate } from '../types'
 import type {
   CalendarSelectionSingle,
@@ -152,10 +152,16 @@ export const DtPicker: React.FC<DtPickerProps> = (props) => {
 
   // 🎯 Use modal state hook (encapsulates all modal behavior)
   const {
-    isOpen,
+    isOpen: isModalOpen,
     handlers: modalHandlers,
     refs: { pickerRef, modalRef }
   } = useModalState()
+  const isOpen = isModalOpen && !isDisabled
+  const { close } = modalHandlers
+
+  useEffect(() => {
+    if (isDisabled) close()
+  }, [isDisabled, close])
 
   // Create wrapper refs for trigger
   const inputRef = useMemo(() => React.createRef<HTMLInputElement>(), [])

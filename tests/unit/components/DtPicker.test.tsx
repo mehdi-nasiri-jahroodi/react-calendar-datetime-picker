@@ -202,6 +202,24 @@ describe('DtPicker', () => {
     expect(screen.queryByTestId('calendar-core')).not.toBeInTheDocument()
   })
 
+  it('closes an open calendar when the picker becomes disabled', () => {
+    const { rerender } = render(<DtPicker {...defaultProps} />)
+    const input = screen.getByRole('textbox')
+
+    fireEvent.click(input)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+
+    rerender(<DtPicker {...defaultProps} isDisabled />)
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(input).toHaveAttribute('aria-expanded', 'false')
+    expect(mockOnChange).not.toHaveBeenCalled()
+
+    rerender(<DtPicker {...defaultProps} />)
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    fireEvent.click(input)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
   it('passes dark theme prop to modal', () => {
     render(<DtPicker {...defaultProps} dark={true} />)
 
